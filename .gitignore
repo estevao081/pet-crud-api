@@ -34,3 +34,6 @@ build/
 
 *.log
 *.class
+.gitattributes
+target
+compose.yaml

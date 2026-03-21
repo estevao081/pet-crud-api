@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import java.util.UUID;
 import java.util.List;
 
 @Entity
@@ -20,8 +20,8 @@ import java.util.List;
 public class PetModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String name;
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -77,7 +77,7 @@ public class PetModel {
 
 
     public static final class PetModelBuilder {
-        private Long id;
+        private UUID id;
         private String name;
         private Type type;
         private Gender gender;
@@ -93,7 +93,7 @@ public class PetModel {
             return new PetModelBuilder();
         }
 
-        public PetModelBuilder id(Long id) {
+        public PetModelBuilder id(UUID id) {
             this.id = id;
             return this;
         }
