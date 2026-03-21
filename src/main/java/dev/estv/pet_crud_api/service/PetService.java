@@ -4,7 +4,7 @@ import dev.estv.pet_crud_api.dto.PetRecordDTO;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
 import lombok.AllArgsConstructor;
-import org.hibernate.validator.constraints.UUID;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
