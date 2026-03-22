@@ -1,6 +1,6 @@
 package dev.estv.pet_crud_api.service;
 
-import dev.estv.pet_crud_api.dto.PetRecordDTO;
+import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
 import lombok.AllArgsConstructor;

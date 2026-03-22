@@ -1,4 +1,4 @@
-package dev.estv.pet_crud_api.dto;
+package dev.estv.pet_crud_api.dto.request;
 
 import dev.estv.pet_crud_api.model.PetModel;
 import jakarta.validation.constraints.NotNull;

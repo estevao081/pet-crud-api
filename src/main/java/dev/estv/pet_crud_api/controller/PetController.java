@@ -1,6 +1,7 @@
 package dev.estv.pet_crud_api.controller;
 
-import dev.estv.pet_crud_api.dto.PetRecordDTO;
+import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
+import dev.estv.pet_crud_api.dto.response.ApiResponse;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.service.PetService;
 import jakarta.validation.Valid;
@@ -20,36 +21,45 @@ public class PetController {
     private PetService petService;
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid PetRecordDTO petRecordDTO) {
-        petService.save(petRecordDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<ApiResponse<Void>> save(@RequestBody @Valid PetRecordDTO dto) {
+        petService.save(dto);
+        return ResponseEntity.status(201)
+                .body(new ApiResponse<>(true, null, "Pet created successfully"));
     }
 
     @GetMapping
-    public ResponseEntity<List<PetModel>> findAll() {
+    public ResponseEntity<ApiResponse<List<PetModel>>> findAll() {
+
         List<PetModel> pets = petService.findAll();
 
-        if (pets.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(pets);
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, pets, "Pet list")
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+
         boolean deleted = petService.delete(id);
 
         if (!deleted) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(false, null, "Pet not found"));
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, null, "Pet removed successfully")
+        );
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<PetModel>> search(@RequestBody PetRecordDTO filter) {
-        return ResponseEntity.ok(petService.search(filter));
+    public ResponseEntity<ApiResponse<List<PetModel>>> search(@RequestBody PetRecordDTO filter) {
+
+        List<PetModel> pets = petService.search(filter);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, pets, "Search result")
+        );
     }
 
 }
