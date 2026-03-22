@@ -41,9 +41,9 @@ public class PetService {
         return petRepository.findAll();
     }
 
-    public void delete(@PathVariable UUID id) {
+    public boolean delete(@PathVariable UUID id) {
         Optional<PetModel> pet = petRepository.findById(id);
-        pet.ifPresent(petModel -> petRepository.delete(petModel));
+        pet.ifPresent(petModel -> petRepository.delete(petModel)); return true;
     }
 
     public List<PetModel> search(PetRecordDTO petRecordDTO) {
