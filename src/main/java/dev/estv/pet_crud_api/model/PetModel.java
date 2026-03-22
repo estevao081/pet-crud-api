@@ -1,5 +1,7 @@
 package dev.estv.pet_crud_api.model;
 
+import dev.estv.pet_crud_api.exception.InvalidGenderException;
+import dev.estv.pet_crud_api.exception.InvalidTypeException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -43,10 +45,34 @@ public class PetModel {
     private String race;
 
     public enum Type {
-        CAO, GATO
+        CAO, GATO;
+
+        public static Type fromString(String input) {
+            if (input == null || input.isBlank()) {
+                return null;
+            }
+
+            return switch (input.trim().toUpperCase()) {
+                case "CÃO" -> CAO;
+                case "GATO" -> GATO;
+                default -> throw new InvalidTypeException();
+            };
+        }
     }
 
     public enum Gender {
-        F, M
+        F, M;
+
+        public static Gender fromString(String input) {
+            if (input == null || input.isBlank()) {
+                return null;
+            }
+
+            return switch (input.trim().toUpperCase()) {
+                case "M" -> M;
+                case "F" -> F;
+                default -> throw new InvalidGenderException();
+            };
+        }
     }
 }

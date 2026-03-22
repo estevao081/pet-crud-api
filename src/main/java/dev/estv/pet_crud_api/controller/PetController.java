@@ -1,6 +1,7 @@
 package dev.estv.pet_crud_api.controller;
 
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
+import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
 import dev.estv.pet_crud_api.dto.response.ApiResponse;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.service.PetService;
@@ -53,7 +54,7 @@ public class PetController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<ApiResponse<List<PetModel>>> search(@RequestBody PetRecordDTO filter) {
+    public ResponseEntity<ApiResponse<List<PetModel>>> search(@RequestBody PetSearchDTO filter) {
 
         List<PetModel> pets = petService.search(filter);
 

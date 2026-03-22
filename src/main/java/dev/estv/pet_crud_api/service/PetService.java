@@ -1,6 +1,7 @@
 package dev.estv.pet_crud_api.service;
 
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
+import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
 import dev.estv.pet_crud_api.exception.*;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
@@ -42,37 +43,15 @@ public class PetService {
         return true;
     }
 
-    public List<PetModel> search(PetRecordDTO dto) {
-        PetModel.Type type = null;
-
-        if (dto.type() != null) {
-            type = mapType(dto.type());
-        }
-
+    public List<PetModel> search(PetSearchDTO dto) {
         return petRepository.findAll(PetSpecification.filter(dto));
-    }
-
-    private static PetModel.Type mapType(String value) {
-        return switch (value.toLowerCase()) {
-            case "cao" -> PetModel.Type.CAO;
-            case "gato" -> PetModel.Type.GATO;
-            default -> throw new InvalidTypeException();
-        };
-    }
-
-    private static PetModel.Gender mapGender(String value) {
-        return switch (value.toLowerCase()) {
-            case "f" -> PetModel.Gender.F;
-            case "m" -> PetModel.Gender.M;
-            default -> throw new InvalidGenderException();
-        };
     }
 
     private PetModel toEntity(PetRecordDTO dto) {
         return PetModel.builder()
                 .name(dto.name())
-                .type(mapType(dto.type()))
-                .gender(mapGender(dto.gender()))
+                .type(PetModel.Type.fromString(dto.type()))
+                .gender(PetModel.Gender.fromString(dto.gender()))
                 .address(dto.address())
                 .age(dto.age())
                 .weight(dto.weight())
@@ -107,11 +86,11 @@ public class PetService {
             petModel.setWeight(NA);
         }
 
-        if(petModel.getRace().length() > 15) {
+        if (petModel.getRace().length() > 15) {
             throw new InvalidRaceException();
         }
 
-        if(petModel.getRace().isBlank()) {
+        if (petModel.getRace().isBlank()) {
             petModel.setRace(NA);
         }
     }
