@@ -10,9 +10,9 @@ public record PetRecordDTO(
         @NotBlank(message = "Name is required")
         String name,
         @NotNull
-        PetModel.Type type,
+        String type,
         @NotNull
-        PetModel.Gender gender,
+        String gender,
         List<String>address,
         Integer age,
         Integer weight,
