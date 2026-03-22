@@ -2,12 +2,15 @@ package dev.estv.pet_crud_api.specification;
 
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.model.PetModel;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 public class PetSpecification {
 
     public static Specification<PetModel> filter(PetRecordDTO petRecordDTO) {
         return (root, query, cb) -> {
+
+            query.distinct(true);
 
             var predicates = cb.conjunction();
 
@@ -24,6 +27,14 @@ public class PetSpecification {
             if (petRecordDTO.gender() != null) {
                 predicates = cb.and(predicates,
                         cb.equal(root.get("gender"), petRecordDTO.gender()));
+            }
+
+            if (petRecordDTO.address() != null && !petRecordDTO.address().isEmpty()) {
+
+                Join<PetModel, String> addressJoin = root.join("address");
+
+                predicates = cb.and(predicates,
+                        addressJoin.in(petRecordDTO.address()));
             }
 
             if (petRecordDTO.age() != null) {

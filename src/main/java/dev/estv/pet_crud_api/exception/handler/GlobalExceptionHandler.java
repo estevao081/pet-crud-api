@@ -1,8 +1,7 @@
 package dev.estv.pet_crud_api.exception.handler;
 
 import dev.estv.pet_crud_api.dto.response.ApiResponse;
-import dev.estv.pet_crud_api.exception.InvalidGenderException;
-import dev.estv.pet_crud_api.exception.InvalidTypeException;
+import dev.estv.pet_crud_api.exception.*;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,14 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(false, errors, "Validation Error"));
     }
 
-    @ExceptionHandler({InvalidTypeException.class, InvalidGenderException.class})
+    @ExceptionHandler({
+            InvalidTypeException.class,
+            InvalidGenderException.class,
+            InvalidNameException.class,
+            InvalidAddressException.class,
+            InvalidAgeException.class,
+            InvalidWeightException.class,
+            InvalidRaceException.class})
     public ResponseEntity<ApiResponse<Void>> handleBusiness(RuntimeException ex) {
         return ResponseEntity.badRequest()
                 .body(new ApiResponse<>(false, null, ex.getMessage()));

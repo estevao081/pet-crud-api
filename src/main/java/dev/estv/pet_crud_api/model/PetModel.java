@@ -1,6 +1,8 @@
 package dev.estv.pet_crud_api.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class PetModel {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 25)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -34,9 +36,10 @@ public class PetModel {
     @CollectionTable(name = "pet_addresses", joinColumns = @JoinColumn(name = "pet_id"))
     @Column(name = "address")
     private List<String> address;
+    private String age;
+    private String weight;
 
-    private Integer age;
-    private Integer weight;
+    @Column(length = 15)
     private String race;
 
     public enum Type {
