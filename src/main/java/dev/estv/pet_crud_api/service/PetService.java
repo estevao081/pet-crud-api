@@ -4,7 +4,9 @@ import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
 import lombok.AllArgsConstructor;
+
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,13 @@ public class PetService {
 
     public boolean delete(@PathVariable UUID id) {
         Optional<PetModel> pet = petRepository.findById(id);
-        pet.ifPresent(petModel -> petRepository.delete(petModel)); return true;
+
+        if(pet.isEmpty()) {
+            return false;
+        }
+        
+        pet.ifPresent(petModel -> petRepository.delete(petModel));
+        return true;
     }
 
     public List<PetModel> search(PetRecordDTO petRecordDTO) {
