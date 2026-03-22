@@ -22,9 +22,12 @@ public class PetModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @ElementCollection
