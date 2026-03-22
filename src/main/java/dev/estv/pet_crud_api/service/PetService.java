@@ -3,104 +3,56 @@ package dev.estv.pet_crud_api.service;
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
-import lombok.AllArgsConstructor;
-
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import dev.estv.pet_crud_api.specification.PetSpecification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class PetService {
 
-    @Autowired
-    private PetRepository petRepository;
+    private final PetRepository petRepository;
 
-    public void save(@RequestBody PetRecordDTO petRecordDTO) {
+    public PetService(PetRepository petRepository) {
+        this.petRepository = petRepository;
+    }
 
-        PetModel petModel = PetModel.PetModelBuilder
-                .PetModel()
-                .name(petRecordDTO.name())
-                .type(petRecordDTO.type())
-                .gender(petRecordDTO.gender())
-                .address(petRecordDTO.address())
-                .age(petRecordDTO.age())
-                .weight(petRecordDTO.weight())
-                .race(petRecordDTO.race())
-                .build();
-
-        petRepository.save(petModel);
+    public PetModel save(PetRecordDTO petRecordDTO) {
+        PetModel petModel = toEntity(petRecordDTO);
+        return petRepository.save(petModel);
     }
 
     public List<PetModel> findAll() {
         return petRepository.findAll();
     }
 
-    public boolean delete(@PathVariable UUID id) {
-        Optional<PetModel> pet = petRepository.findById(id);
-
-        if(pet.isEmpty()) {
+    public boolean delete(UUID id) {
+        if (!petRepository.existsById(id)) {
             return false;
         }
-        
-        pet.ifPresent(petModel -> petRepository.delete(petModel));
+
+        petRepository.deleteById(id);
         return true;
     }
 
     public List<PetModel> search(PetRecordDTO petRecordDTO) {
+        if (petRecordDTO.type() == null) {
+            throw new IllegalArgumentException("Type is required");
+        }
         return petRepository.findAll(PetSpecification.filter(petRecordDTO));
     }
 
-    public static class PetSpecification {
-
-        public static Specification<PetModel> filter(PetRecordDTO petRecordDTO) {
-            return (root, query, cb) -> {
-
-                var predicates = cb.conjunction();
-
-                if (petRecordDTO.name() != null && !petRecordDTO.name().isBlank()) {
-                    predicates = cb.and(predicates,
-                            cb.like(root.get("name"), "%" + petRecordDTO.name() + "%"));
-                }
-
-                if (petRecordDTO.type() != null) {
-                    predicates = cb.and(predicates,
-                            cb.equal(root.get("type"), petRecordDTO.type()));
-                }
-
-                if (petRecordDTO.gender() != null) {
-                    predicates = cb.and(predicates,
-                            cb.equal(root.get("gender"), petRecordDTO.gender()));
-                }
-
-                if (petRecordDTO.age() != null) {
-                    predicates = cb.and(predicates,
-                            cb.equal(root.get("age"), petRecordDTO.age()));
-                }
-
-                if (petRecordDTO.weight() != null) {
-                    predicates = cb.and(predicates,
-                            cb.equal(root.get("weight"), petRecordDTO.weight()));
-                }
-
-                if (petRecordDTO.race() != null && !petRecordDTO.race().isBlank()) {
-                    predicates = cb.and(predicates,
-                            cb.like(root.get("race"), "%" + petRecordDTO.race() + "%"));
-                }
-
-                if (petRecordDTO.type() == null) {
-                    throw new IllegalArgumentException("Tipo é obrigatório!");
-                }
-
-                return predicates;
-            };
-        }
+    private PetModel toEntity(PetRecordDTO dto) {
+        return PetModel.PetModelBuilder
+                .PetModel()
+                .name(dto.name())
+                .type(dto.type())
+                .gender(dto.gender())
+                .address(dto.address())
+                .age(dto.age())
+                .weight(dto.weight())
+                .race(dto.race())
+                .build();
     }
 }
