@@ -1,9 +1,7 @@
 package dev.estv.pet_crud_api.specification;
 
-import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
 import dev.estv.pet_crud_api.model.PetModel;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -15,13 +13,18 @@ public class PetSpecification {
 
         return (root, query, cb) -> {
 
-            query.distinct(true);
+            if (dto.type() == null || dto.type().isBlank()) {
+                throw new IllegalArgumentException("Tipo é obrigatório");
+            }
 
             var predicates = new ArrayList<Predicate>();
 
-            predicates.add(cb.equal(root.get("type"), dto.type()));
+            predicates.add(
+                    cb.equal(root.get("type"),
+                            PetModel.Type.fromString(dto.type()))
+            );
 
-            if (dto.name() != null && !dto.name().isBlank()) {
+            if (hasValue(dto.name())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("name")),
@@ -30,7 +33,7 @@ public class PetSpecification {
                 );
             }
 
-            if (dto.gender() != null && !dto.gender().isBlank()) {
+            if (hasValue(dto.gender())) {
                 predicates.add(
                         cb.equal(
                                 root.get("gender"),
@@ -39,15 +42,21 @@ public class PetSpecification {
                 );
             }
 
-            if (dto.age() != null) {
-                predicates.add(cb.equal(root.get("age"), dto.age()));
+            if (hasValue(dto.age())) {
+                predicates.add(
+                        cb.equal(root.get("age"),
+                                Integer.parseInt(dto.age()))
+                );
             }
 
-            if (dto.weight() != null) {
-                predicates.add(cb.equal(root.get("weight"), dto.weight()));
+            if (hasValue(dto.weight())) {
+                predicates.add(
+                        cb.equal(root.get("weight"),
+                                Double.parseDouble(dto.weight()))
+                );
             }
 
-            if (dto.race() != null && !dto.race().isBlank()) {
+            if (hasValue(dto.race())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("race")),
@@ -56,7 +65,38 @@ public class PetSpecification {
                 );
             }
 
+            if (hasValue(dto.street())) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(root.get("address").get("street")),
+                                "%" + dto.street().toLowerCase() + "%"
+                        )
+                );
+            }
+
+            if (hasValue(dto.number())) {
+                predicates.add(
+                        cb.equal(
+                                root.get("address").get("number"),
+                                dto.number()
+                        )
+                );
+            }
+
+            if (hasValue(dto.city())) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(root.get("address").get("city")),
+                                "%" + dto.city().toLowerCase() + "%"
+                        )
+                );
+            }
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    private static boolean hasValue(String value) {
+        return value != null && !value.isBlank();
     }
 }

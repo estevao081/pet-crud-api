@@ -3,6 +3,7 @@ package dev.estv.pet_crud_api.service;
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
 import dev.estv.pet_crud_api.exception.*;
+import dev.estv.pet_crud_api.model.PetAddressModel;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
 import dev.estv.pet_crud_api.specification.PetSpecification;
@@ -25,8 +26,8 @@ public class PetService {
 
     public PetModel save(PetRecordDTO petRecordDTO) {
         PetModel petModel = toEntity(petRecordDTO);
-        normalizeAddress(petModel);
         validatePet(petModel);
+        normalizeAddress(petModel);
         return petRepository.save(petModel);
     }
 
@@ -52,11 +53,36 @@ public class PetService {
                 .name(dto.name())
                 .type(PetModel.Type.fromString(dto.type()))
                 .gender(PetModel.Gender.fromString(dto.gender()))
-                .address(dto.address())
-                .age(dto.age())
-                .weight(dto.weight())
-                .race(dto.race())
+                .address(buildAddress(dto))
+                .age(normalizeField(dto.age()))
+                .weight(normalizeField(dto.weight()))
+                .race(normalizeField(dto.race()))
                 .build();
+    }
+
+    private PetAddressModel buildAddress(PetRecordDTO dto) {
+        PetAddressModel address = new PetAddressModel();
+
+        address.setStreet(dto.street());
+        address.setNumber(dto.number());
+        address.setCity(dto.city());
+
+        return address;
+    }
+
+    private void normalizeAddress(PetModel petModel) {
+
+        if (petModel.getAddress() == null) return;
+
+        PetAddressModel address = petModel.getAddress();
+
+        address.setStreet(normalizeField(address.getStreet()));
+        address.setNumber(normalizeField(address.getNumber()));
+        address.setCity(normalizeField(address.getCity()));
+    }
+
+    private String normalizeField(String value) {
+        return (value == null || value.isBlank()) ? NA : value;
     }
 
     private static void validatePet(PetModel petModel) {
@@ -64,7 +90,9 @@ public class PetService {
             throw new InvalidNameException();
         }
 
-        if (petModel.getAddress().size() != 3) {
+        if (petModel.getAddress().getStreet().length() > 20
+                || petModel.getAddress().getNumber().length() > 20
+                || petModel.getAddress().getCity().length() > 20) {
             throw new InvalidAddressException();
         }
 
@@ -73,8 +101,6 @@ public class PetService {
                     || Double.parseDouble(petModel.getAge()) > 20) {
                 throw new InvalidAgeException();
             }
-        } else {
-            petModel.setAge(NA);
         }
 
         if (petModel.getWeight().matches("^\\d+(\\.\\d+)?$")) {
@@ -82,32 +108,10 @@ public class PetService {
                     || Double.parseDouble(petModel.getWeight()) > 60) {
                 throw new InvalidWeightException();
             }
-        } else {
-            petModel.setWeight(NA);
         }
 
         if (petModel.getRace().length() > 15) {
             throw new InvalidRaceException();
         }
-
-        if (petModel.getRace().isBlank()) {
-            petModel.setRace(NA);
-        }
-    }
-
-    private void normalizeAddress(PetModel petModel) {
-        if (petModel.getAddress() == null) return;
-
-        List<String> normalized = new ArrayList<>();
-
-        for (String field : petModel.getAddress()) {
-            if (field == null || field.isBlank()) {
-                normalized.add(NA);
-            } else {
-                normalized.add(field);
-            }
-        }
-
-        petModel.setAddress(normalized);
     }
 }

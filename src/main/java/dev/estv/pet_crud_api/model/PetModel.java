@@ -34,14 +34,16 @@ public class PetModel {
     @Column(nullable = false)
     private Gender gender;
 
-    @ElementCollection
-    @CollectionTable(name = "pet_addresses", joinColumns = @JoinColumn(name = "pet_id"))
-    @Column(name = "address")
-    private List<String> address;
+    @Embedded
+    private PetAddressModel address;
+
+    @Column(nullable = false)
     private String age;
+
+    @Column(nullable = false)
     private String weight;
 
-    @Column(length = 15)
+    @Column(nullable = false, length = 15)
     private String race;
 
     public enum Type {

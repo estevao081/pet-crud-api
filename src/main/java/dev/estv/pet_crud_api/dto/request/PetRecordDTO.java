@@ -1,8 +1,8 @@
 package dev.estv.pet_crud_api.dto.request;
 
-import jakarta.validation.constraints.*;
-
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public record PetRecordDTO(
         @NotBlank(message = "Name is required")
@@ -14,7 +14,23 @@ public record PetRecordDTO(
         @NotNull
         String gender,
 
-        List<String>address,
+        @Pattern(
+                regexp = "^[A-Za-zÀ-ÿ\\s]*$",
+                message = "Street must have letters only"
+        )
+        String street,
+
+        @Pattern(
+                regexp = "^(\\s*|\\d+([.,]\\d+)?|NÃO INFORMADO)$",
+                message = "Number must have numbers only"
+        )
+        String number,
+
+        @Pattern(
+                regexp = "^[A-Za-zÀ-ÿ\\s]*$",
+                message = "City must have letters only"
+        )
+        String city,
 
         @Pattern(
                 regexp = "^(\\s*|\\d+([.,]\\d+)?|NÃO INFORMADO)$",
