@@ -30,24 +30,17 @@ public class PetController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<PetModel>>> findAll() {
-
         List<PetModel> pets = petService.findAll();
-
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, pets, "Pet list")
-        );
+        return ResponseEntity.ok(new ApiResponse<>(true, pets, "Pet list"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
-
         boolean deleted = petService.delete(id);
-
         if (!deleted) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(false, null, "Pet not found"));
         }
-
         return ResponseEntity.ok(
                 new ApiResponse<>(true, null, "Pet removed successfully")
         );
@@ -55,12 +48,19 @@ public class PetController {
 
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<List<PetModel>>> search(@RequestBody PetSearchDTO filter) {
-
         List<PetModel> pets = petService.search(filter);
-
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, pets, "Search result")
-        );
+        return ResponseEntity.ok(new ApiResponse<>(true, pets, "Search result"));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<PetModel>> update(@PathVariable(value = "id") UUID id,
+                                                        @RequestBody @Valid PetRecordDTO dto) {
+        if (petService.findById(id) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>(false, null, "Pet not found"));
+        }
+        PetModel updatedClient = petService.update(id, dto);
+        return ResponseEntity.status(200)
+                .body(new ApiResponse<>(true, updatedClient, "Pet updated succesfuly"));
+    }
 }

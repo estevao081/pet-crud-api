@@ -1,6 +1,7 @@
 package dev.estv.pet_crud_api.specification;
 
 import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
+import dev.estv.pet_crud_api.exception.InvalidTypeException;
 import dev.estv.pet_crud_api.model.PetModel;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,7 +15,7 @@ public class PetSpecification {
         return (root, query, cb) -> {
 
             if (dto.type() == null || dto.type().isBlank()) {
-                throw new IllegalArgumentException("Tipo é obrigatório");
+                throw new InvalidTypeException();
             }
 
             var predicates = new ArrayList<Predicate>();

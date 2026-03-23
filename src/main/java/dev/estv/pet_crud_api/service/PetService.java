@@ -7,12 +7,10 @@ import dev.estv.pet_crud_api.model.PetAddressModel;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
 import dev.estv.pet_crud_api.specification.PetSpecification;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PetService {
@@ -46,6 +44,17 @@ public class PetService {
 
     public List<PetModel> search(PetSearchDTO dto) {
         return petRepository.findAll(PetSpecification.filter(dto));
+    }
+
+    public PetModel update(UUID id, PetRecordDTO petRecordDTO) {
+        Optional<PetModel> pet = petRepository.findById(id);
+        var petModel = pet.get();
+        BeanUtils.copyProperties(petRecordDTO, petModel);
+        return petRepository.save(petModel);
+    }
+
+    public PetModel findById(UUID id) {
+        return petRepository.findById(id).orElse(null);
     }
 
     private PetModel toEntity(PetRecordDTO dto) {
