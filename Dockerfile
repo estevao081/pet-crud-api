@@ -1,16 +1,17 @@
 FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
-RUN apt-get-update
-RUN apt-get-install openjdk-21-jdk -y
+RUN apt-get update && \
+    apt-get install -y && \
+    apt-get clean
+
 COPY . .
 
-RUN apt-get-install maven -y
-RUN mvn clean install
+RUN mvn clean package -DskipTests
 
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre-slim
 
 EXPOSE 8080
 
 COPY --from=builder /target/pet-crud-api-0.0.1-SNAPSHOT.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "pet-crud-api.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
