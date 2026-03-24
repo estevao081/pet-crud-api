@@ -1,5 +1,6 @@
 package dev.estv.pet_crud_api.dto.request;
 
+import dev.estv.pet_crud_api.model.PetAddressModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -8,38 +9,22 @@ public record PetRecordDTO(
         @NotBlank(message = "Name is required")
         String name,
 
-        @NotNull
+        @NotNull(message = "Type is required")
         String type,
 
-        @NotNull
+        @NotNull(message = "Gender is required")
         String gender,
 
-        @Pattern(
-                regexp = "^[A-Za-zÀ-ÿ\\s]*$",
-                message = "Street must have letters only"
-        )
-        String street,
+        PetAddressModel address,
 
         @Pattern(
-                regexp = "^(\\s*|\\d+([.,]\\d+)?|NÃO INFORMADO)$",
-                message = "Number must have numbers only"
-        )
-        String number,
-
-        @Pattern(
-                regexp = "^[A-Za-zÀ-ÿ\\s]*$",
-                message = "City must have letters only"
-        )
-        String city,
-
-        @Pattern(
-                regexp = "^(\\s*|\\d+([.,]\\d+)?|NÃO INFORMADO)$",
+                regexp = "^(\\s*|\\d+([.,]\\d+)?|não informado)$",
                 message = "Age must be a number or NA"
         )
         String age,
 
         @Pattern(
-                regexp = "^(\\s*|\\d+([.,]\\d+)?|NÃO INFORMADO)$",
+                regexp = "^(\\s*|\\d+([.,]\\d+)?|não informado)$",
                 message = "Weight must be a number or NA"
         )
         String weight,

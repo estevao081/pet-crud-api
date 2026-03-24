@@ -16,7 +16,7 @@ import java.util.*;
 public class PetService {
 
     private final PetRepository petRepository;
-    private static final String NA = "NÃO INFORMADO";
+    private static final String NA = "não informado";
 
     public PetService(PetRepository petRepository) {
         this.petRepository = petRepository;
@@ -50,6 +50,8 @@ public class PetService {
         Optional<PetModel> pet = petRepository.findById(id);
         var petModel = pet.get();
         BeanUtils.copyProperties(petRecordDTO, petModel);
+        validatePet(petModel);
+        normalizeAddress(petModel);
         return petRepository.save(petModel);
     }
 
@@ -59,22 +61,22 @@ public class PetService {
 
     private PetModel toEntity(PetRecordDTO dto) {
         return PetModel.builder()
-                .name(dto.name())
+                .name(dto.name().toLowerCase())
                 .type(PetModel.Type.fromString(dto.type()))
                 .gender(PetModel.Gender.fromString(dto.gender()))
                 .address(buildAddress(dto))
-                .age(normalizeField(dto.age()))
-                .weight(normalizeField(dto.weight()))
-                .race(normalizeField(dto.race()))
+                .age(normalizeField(dto.age().toLowerCase()))
+                .weight(normalizeField(dto.weight().toLowerCase()))
+                .race(normalizeField(dto.race().toLowerCase()))
                 .build();
     }
 
     private PetAddressModel buildAddress(PetRecordDTO dto) {
         PetAddressModel address = new PetAddressModel();
 
-        address.setStreet(dto.street());
-        address.setNumber(dto.number());
-        address.setCity(dto.city());
+        address.setStreet(dto.address().getStreet().toLowerCase());
+        address.setNumber(dto.address().getNumber().toLowerCase());
+        address.setCity(dto.address().getCity().toLowerCase());
 
         return address;
     }
@@ -98,6 +100,9 @@ public class PetService {
         if (!petModel.getName().matches("^[A-Za-zÀ-ÿ]+(?:\\s+[A-Za-zÀ-ÿ]+)+$")) {
             throw new InvalidNameException();
         }
+
+        if(petModel.getType() == null) throw new InvalidTypeException();
+        if(petModel.getGender() == null) throw new InvalidGenderException();
 
         if (petModel.getAddress().getStreet().length() > 20
                 || petModel.getAddress().getNumber().length() > 20
