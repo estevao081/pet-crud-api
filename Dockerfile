@@ -8,7 +8,7 @@ COPY . .
 
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jre-slim
+FROM eclipse-temurin:21-jre
 
 EXPOSE 8080
 
