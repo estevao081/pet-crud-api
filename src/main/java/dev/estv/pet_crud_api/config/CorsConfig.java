@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://petcareportal.netlify.app/") // Angular
+                        .allowedOrigins("https://adotapetportal.netlify.app") // Angular
                         .allowedMethods("POST", "GET", "PUT", "DELETE",  "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
