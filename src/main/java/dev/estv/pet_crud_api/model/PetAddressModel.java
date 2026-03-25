@@ -11,11 +11,8 @@ import lombok.Setter;
 public class PetAddressModel {
 
     @Column(nullable = false)
-    private String street;
-
-    @Column(nullable = false)
-    private String number;
-
-    @Column(nullable = false)
     private String city;
+
+    @Column(nullable = false)
+    private String state;
 }

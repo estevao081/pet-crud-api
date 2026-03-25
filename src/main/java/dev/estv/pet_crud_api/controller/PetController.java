@@ -1,5 +1,6 @@
 package dev.estv.pet_crud_api.controller;
 
+import dev.estv.pet_crud_api.dto.request.AddressRecordDTO;
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
 import dev.estv.pet_crud_api.dto.response.ApiResponse;

@@ -1,6 +1,7 @@
 package dev.estv.pet_crud_api.specification;
 
 import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
+import dev.estv.pet_crud_api.exception.InvalidAddressException;
 import dev.estv.pet_crud_api.exception.InvalidTypeException;
 import dev.estv.pet_crud_api.model.PetModel;
 import jakarta.persistence.criteria.Predicate;
@@ -14,22 +15,26 @@ public class PetSpecification {
 
         return (root, query, cb) -> {
 
-            if (dto.type() == null || dto.type().isBlank()) {
-                throw new InvalidTypeException();
+            if (dto.dtoAddress().state() == null || dto.dtoAddress().city() == null) {
+                throw new InvalidAddressException();
             }
 
             var predicates = new ArrayList<Predicate>();
-
-            predicates.add(
-                    cb.equal(root.get("type"),
-                            PetModel.Type.fromString(dto.type()))
-            );
 
             if (hasValue(dto.name())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("name")),
                                 "%" + dto.name().toLowerCase() + "%"
+                        )
+                );
+            }
+
+            if (hasValue(dto.type())) {
+                predicates.add(
+                        cb.equal(
+                                root.get("type"),
+                                PetModel.Type.fromString(dto.type())
                         )
                 );
             }
@@ -57,38 +62,29 @@ public class PetSpecification {
                 );
             }
 
+            if (hasValue(dto.dtoAddress().city())) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(root.get("city")),
+                                "%" + dto.dtoAddress().city().toLowerCase() + "%"
+                        )
+                );
+            }
+
+            if (hasValue(dto.dtoAddress().state())) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(root.get("state")),
+                                "%" + dto.dtoAddress().state().toLowerCase() + "%"
+                        )
+                );
+            }
+
             if (hasValue(dto.race())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("race")),
                                 "%" + dto.race().toLowerCase() + "%"
-                        )
-                );
-            }
-
-            if (hasValue(dto.street())) {
-                predicates.add(
-                        cb.like(
-                                cb.lower(root.get("address").get("street")),
-                                "%" + dto.street().toLowerCase() + "%"
-                        )
-                );
-            }
-
-            if (hasValue(dto.number())) {
-                predicates.add(
-                        cb.equal(
-                                root.get("address").get("number"),
-                                dto.number()
-                        )
-                );
-            }
-
-            if (hasValue(dto.city())) {
-                predicates.add(
-                        cb.like(
-                                cb.lower(root.get("address").get("city")),
-                                "%" + dto.city().toLowerCase() + "%"
                         )
                 );
             }

@@ -4,9 +4,7 @@ public record PetSearchDTO(
         String name,
         String type,
         String gender,
-        String street,
-        String number,
-        String city,
+        AddressRecordDTO dtoAddress,
         String age,
         String weight,
         String race

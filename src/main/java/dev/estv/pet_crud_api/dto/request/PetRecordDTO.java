@@ -1,6 +1,5 @@
 package dev.estv.pet_crud_api.dto.request;
 
-import dev.estv.pet_crud_api.model.PetAddressModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -15,7 +14,8 @@ public record PetRecordDTO(
         @NotNull(message = "Gender is required")
         String gender,
 
-        PetAddressModel address,
+        @NotNull(message = "Address is required")
+        AddressRecordDTO address,
 
         @Pattern(
                 regexp = "^(\\s*|\\d+([.,]\\d+)?|não informado)$",

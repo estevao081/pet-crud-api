@@ -35,6 +35,7 @@ public class PetModel {
     private Gender gender;
 
     @Embedded
+    @Column(nullable = false)
     private PetAddressModel address;
 
     @Column(nullable = false)
