@@ -15,10 +15,6 @@ public class PetSpecification {
 
         return (root, query, cb) -> {
 
-            if (dto.city().isBlank() || dto.state().isBlank()) {
-                throw new InvalidAddressException();
-            }
-
             var predicates = new ArrayList<Predicate>();
 
             if (hasValue(dto.name())) {
