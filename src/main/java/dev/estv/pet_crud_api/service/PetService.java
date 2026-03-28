@@ -1,6 +1,5 @@
 package dev.estv.pet_crud_api.service;
 
-import dev.estv.pet_crud_api.dto.request.AddressRecordDTO;
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
 import dev.estv.pet_crud_api.model.PetModel;
@@ -28,7 +27,6 @@ public class PetService {
     public PetModel save(PetRecordDTO petRecordDTO) {
         PetModel petModel = util.toEntity(petRecordDTO);
         util.validatePet(petModel);
-        util.normalizeAddress(petModel);
         return petRepository.save(petModel);
     }
 
@@ -54,7 +52,6 @@ public class PetService {
         var petModel = pet.get();
         BeanUtils.copyProperties(petRecordDTO, petModel);
         util.validatePet(petModel);
-        util.normalizeAddress(petModel);
         return petRepository.save(petModel);
     }
 

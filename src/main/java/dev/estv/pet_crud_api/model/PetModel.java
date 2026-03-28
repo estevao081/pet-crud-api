@@ -3,11 +3,8 @@ package dev.estv.pet_crud_api.model;
 import dev.estv.pet_crud_api.exception.InvalidGenderException;
 import dev.estv.pet_crud_api.exception.InvalidTypeException;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,7 +20,7 @@ public class PetModel {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -34,9 +31,11 @@ public class PetModel {
     @Column(nullable = false)
     private Gender gender;
 
-    @Embedded
     @Column(nullable = false)
-    private PetAddressModel address;
+    private String city;
+
+    @Column(nullable = false)
+    private String state;
 
     @Column(nullable = false)
     private String age;
@@ -44,7 +43,7 @@ public class PetModel {
     @Column(nullable = false)
     private String weight;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false)
     private String race;
 
     public enum Type {

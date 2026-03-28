@@ -15,7 +15,7 @@ public class PetSpecification {
 
         return (root, query, cb) -> {
 
-            if (dto.dtoAddress().state() == null || dto.dtoAddress().city() == null) {
+            if (dto.city().isBlank() || dto.state().isBlank()) {
                 throw new InvalidAddressException();
             }
 
@@ -58,24 +58,24 @@ public class PetSpecification {
             if (hasValue(dto.weight())) {
                 predicates.add(
                         cb.equal(root.get("weight"),
-                                Double.parseDouble(dto.weight()))
+                                Integer.parseInt(dto.weight()))
                 );
             }
 
-            if (hasValue(dto.dtoAddress().city())) {
+            if (hasValue(dto.city())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("city")),
-                                "%" + dto.dtoAddress().city().toLowerCase() + "%"
+                                "%" + dto.city().toLowerCase() + "%"
                         )
                 );
             }
 
-            if (hasValue(dto.dtoAddress().state())) {
+            if (hasValue(dto.state())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("state")),
-                                "%" + dto.dtoAddress().state().toLowerCase() + "%"
+                                "%" + dto.state().toLowerCase() + "%"
                         )
                 );
             }

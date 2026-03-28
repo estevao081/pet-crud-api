@@ -1,9 +1,7 @@
 package dev.estv.pet_crud_api.util;
 
-import dev.estv.pet_crud_api.dto.request.AddressRecordDTO;
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
 import dev.estv.pet_crud_api.exception.*;
-import dev.estv.pet_crud_api.model.PetAddressModel;
 import dev.estv.pet_crud_api.model.PetModel;
 import org.springframework.stereotype.Component;
 
@@ -17,64 +15,42 @@ public class Util {
                 .name(dto.name().toLowerCase())
                 .type(PetModel.Type.fromString(dto.type()))
                 .gender(PetModel.Gender.fromString(dto.gender()))
-                .address(buildAddress(dto.address()))
-                .age(normalizeField(dto.age().toLowerCase()))
-                .weight(normalizeField(dto.weight().toLowerCase()))
-                .race(normalizeField(dto.race().toLowerCase()))
+                .city(dto.city())
+                .state(dto.state())
+                .age(normalizeField(dto.age()))
+                .weight(normalizeField(dto.weight()))
+                .race(normalizeField(dto.race()))
                 .build();
     }
 
-    public PetAddressModel buildAddress(AddressRecordDTO dto) {
-        PetAddressModel address = new PetAddressModel();
-
-        address.setCity(dto.city());
-        address.setState(dto.state());
-
-        return address;
-    }
-
-    public void normalizeAddress(PetModel petModel) {
-
-        if (petModel.getAddress() == null) throw new InvalidAddressException();
-
-        PetAddressModel address = petModel.getAddress();
-
-        address.setCity(normalizeField(address.getCity()));
-        address.setState(normalizeField(address.getState()));
-    }
-
     public String normalizeField(String value) {
-        return (value == null || value.isBlank()) ? NA : value;
+        return (value == null || value.isBlank()) ? NA : value.toLowerCase();
     }
 
     public void validatePet(PetModel petModel) {
-        if (!petModel.getName().matches("^[A-Za-zÀ-ÿ]+(?:\\s+[A-Za-zÀ-ÿ]+)+$")) {
+        if (!petModel.getName().matches("^[A-Za-zÀ-ÿ]+(?:\\s+[A-Za-zÀ-ÿ]+)+$")
+                || petModel.getName().length() > 40) {
             throw new InvalidNameException();
         }
 
         if (petModel.getType() == null) throw new InvalidTypeException();
         if (petModel.getGender() == null) throw new InvalidGenderException();
 
-        if (petModel.getAddress().getCity().length() > 30
-                || petModel.getAddress().getState().length() > 30) {
+        if (petModel.getCity().isBlank()
+                || petModel.getCity().length() > 40
+                || petModel.getState().isBlank()) {
             throw new InvalidAddressException();
         }
 
-        if (petModel.getAge().matches("^\\d+(\\.\\d+)?$")) {
-            if (Double.parseDouble(petModel.getAge()) < 0.1
-                    || Double.parseDouble(petModel.getAge()) > 130) {
-                throw new InvalidAgeException();
-            }
+        if (!petModel.getAge().matches("^(?:[1-9]|[1-2]\\d|30|não informado)$")) {
+            throw new InvalidAgeException();
         }
 
-        if (petModel.getWeight().matches("^\\d+(\\.\\d+)?$")) {
-            if (Double.parseDouble(petModel.getWeight()) < 0.5
-                    || Double.parseDouble(petModel.getWeight()) > 90) {
-                throw new InvalidWeightException();
-            }
+        if (!petModel.getWeight().matches("^(?:[1-9]|[1-8]\\d|90|não informado)$")) {
+            throw new InvalidWeightException();
         }
 
-        if (petModel.getRace().length() > 15) {
+        if (petModel.getRace().length() > 20) {
             throw new InvalidRaceException();
         }
     }

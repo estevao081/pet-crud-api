@@ -14,19 +14,13 @@ public record PetRecordDTO(
         @NotNull(message = "Gender is required")
         String gender,
 
-        @NotNull(message = "Address is required")
-        AddressRecordDTO address,
+        @NotNull(message = "City is required")
+        String city,
 
-        @Pattern(
-                regexp = "^(\\s*|\\d+([.,]\\d+)?|não informado)$",
-                message = "Age must be a number or NA"
-        )
+        @NotNull(message = "City is required")
+        String state,
+
         String age,
-
-        @Pattern(
-                regexp = "^(\\s*|\\d+([.,]\\d+)?|não informado)$",
-                message = "Weight must be a number or NA"
-        )
         String weight,
 
         @Pattern(
