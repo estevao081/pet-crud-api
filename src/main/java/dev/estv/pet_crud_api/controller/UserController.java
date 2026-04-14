@@ -25,7 +25,7 @@ public class UserController {
         this.userAdminService = userAdminService;
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     public ResponseEntity<ApiResponse<List<UserModel>>> findAll() {
         List<UserModel> users = userAdminService.findAll();
         return ResponseEntity.ok(new ApiResponse<>(true, users, "Users list"));
