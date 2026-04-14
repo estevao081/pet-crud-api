@@ -1,8 +1,6 @@
 package dev.estv.pet_crud_api.specification;
 
-import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
-import dev.estv.pet_crud_api.exception.InvalidAddressException;
-import dev.estv.pet_crud_api.exception.InvalidTypeException;
+import dev.estv.pet_crud_api.dto.response.PetResponseDTO;
 import dev.estv.pet_crud_api.model.PetModel;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,76 +9,76 @@ import java.util.ArrayList;
 
 public class PetSpecification {
 
-    public static Specification<PetModel> filter(PetSearchDTO dto) {
+    public static Specification<PetModel> filter(PetResponseDTO dto) {
 
         return (root, query, cb) -> {
 
             var predicates = new ArrayList<Predicate>();
 
-            if (hasValue(dto.name())) {
+            if (hasValue(dto.getName())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("name")),
-                                "%" + dto.name().toLowerCase() + "%"
+                                "%" + dto.getName().toLowerCase() + "%"
                         )
                 );
             }
 
-            if (hasValue(dto.type())) {
+            if (hasValue(dto.getType())) {
                 predicates.add(
                         cb.equal(
                                 root.get("type"),
-                                PetModel.Type.fromString(dto.type())
+                                PetModel.Type.fromString(dto.getType())
                         )
                 );
             }
 
-            if (hasValue(dto.gender())) {
+            if (hasValue(dto.getGender())) {
                 predicates.add(
                         cb.equal(
                                 root.get("gender"),
-                                PetModel.Gender.fromString(dto.gender())
+                                PetModel.Gender.fromString(dto.getGender())
                         )
                 );
             }
 
-            if (hasValue(dto.age())) {
+            if (hasValue(dto.getAge())) {
                 predicates.add(
                         cb.equal(root.get("age"),
-                                Integer.parseInt(dto.age()))
+                                Integer.parseInt(dto.getAge()))
                 );
             }
 
-            if (hasValue(dto.weight())) {
+            if (hasValue(dto.getWeight())) {
                 predicates.add(
                         cb.equal(root.get("weight"),
-                                Integer.parseInt(dto.weight()))
+                                Integer.parseInt(dto.getWeight()))
                 );
             }
 
-            if (hasValue(dto.city())) {
+            if (hasValue(dto.getCity())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("city")),
-                                "%" + dto.city().toLowerCase() + "%"
+                                "%" + dto.getCity().toLowerCase() + "%"
                         )
                 );
             }
 
-            if (hasValue(dto.state())) {
+            if (hasValue(dto.getState())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("state")),
-                                "%" + dto.state().toLowerCase() + "%"
+                                "%" + dto.getState().toLowerCase() + "%"
                         )
                 );
             }
 
-            if (hasValue(dto.race())) {
+            if (hasValue(dto.getRace())) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("race")),
-                                "%" + dto.race().toLowerCase() + "%"
+                                "%" + dto.getRace().toLowerCase() + "%"
                         )
                 );
             }

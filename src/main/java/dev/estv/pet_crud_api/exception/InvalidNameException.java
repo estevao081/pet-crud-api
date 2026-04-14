@@ -2,7 +2,7 @@ package dev.estv.pet_crud_api.exception;
 
 public class InvalidNameException extends RuntimeException {
     public InvalidNameException() {
-        super("Pet should have first and last name");
+        super("First and last name is required");
     }
     public InvalidNameException(String message) {
         super(message);

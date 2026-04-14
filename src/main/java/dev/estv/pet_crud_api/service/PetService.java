@@ -1,61 +1,35 @@
 package dev.estv.pet_crud_api.service;
 
-import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
-import dev.estv.pet_crud_api.dto.request.PetSearchDTO;
-import dev.estv.pet_crud_api.model.PetModel;
+import dev.estv.pet_crud_api.dto.response.PetResponseDTO;
 import dev.estv.pet_crud_api.repository.PetRepository;
 import dev.estv.pet_crud_api.specification.PetSpecification;
-import dev.estv.pet_crud_api.util.Util;
-import org.springframework.beans.BeanUtils;
+import dev.estv.pet_crud_api.util.PetMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class PetService {
 
     private final PetRepository petRepository;
-    private final Util util;
+    private final PetMapper petMapper;
 
-    public PetService(PetRepository petRepository, Util util) {
+    public PetService(PetRepository petRepository, PetMapper petMapper) {
         this.petRepository = petRepository;
-        this.util = util;
+        this.petMapper = petMapper;
     }
 
-    public PetModel save(PetRecordDTO petRecordDTO) {
-        PetModel petModel = util.toEntity(petRecordDTO);
-        util.validatePet(petModel);
-        return petRepository.save(petModel);
+    public List<PetResponseDTO> listPets() {
+        return petRepository.findAll()
+                .stream()
+                .map(petMapper::toDTO)
+                .toList();
     }
 
-    public List<PetModel> findAll() {
-        return petRepository.findAll();
-    }
-
-    public boolean delete(UUID id) {
-        if (!petRepository.existsById(id)) {
-            return false;
-        }
-
-        petRepository.deleteById(id);
-        return true;
-    }
-
-    public List<PetModel> search(PetSearchDTO dto) {
-        return petRepository.findAll(PetSpecification.filter(dto));
-    }
-
-    public PetModel update(UUID id, PetRecordDTO petRecordDTO) {
-        Optional<PetModel> pet = petRepository.findById(id);
-        var petModel = pet.get();
-        BeanUtils.copyProperties(petRecordDTO, petModel);
-        util.validatePet(petModel);
-        return petRepository.save(petModel);
-    }
-
-    public PetModel findById(UUID id) {
-        return petRepository.findById(id).orElse(null);
+    public List<PetResponseDTO> search(PetResponseDTO filter) {
+        return petRepository.findAll(PetSpecification.filter(filter))
+                .stream()
+                .map(petMapper::toDTO)
+                .toList();
     }
 }
