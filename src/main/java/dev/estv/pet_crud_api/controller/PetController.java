@@ -7,6 +7,7 @@ import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.service.PetService;
 import dev.estv.pet_crud_api.service.PetUserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +35,9 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PetResponseDTO>>> findAll() {
-        List<PetResponseDTO> pets = petService.listPets();
+    public ResponseEntity<ApiResponse<Page<PetResponseDTO>>> findAll(@RequestParam int page,
+                                                                     @RequestParam int items) {
+        Page<PetResponseDTO> pets = petService.listPets(page, items);
         return ResponseEntity.ok(new ApiResponse<>(true, pets, "Pet list"));
     }
 
@@ -52,8 +54,10 @@ public class PetController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<ApiResponse<List<PetResponseDTO>>> search(@RequestBody PetResponseDTO filter) {
-        List<PetResponseDTO> pets = petService.search(filter);
+    public ResponseEntity<ApiResponse<Page<PetResponseDTO>>> search(@RequestBody PetResponseDTO filter,
+                                                                    @RequestParam int page,
+                                                                    @RequestParam int items) {
+        Page<PetResponseDTO> pets = petService.search(filter,  page, items);
         return ResponseEntity.ok(new ApiResponse<>(true, pets, "Search result"));
     }
 
