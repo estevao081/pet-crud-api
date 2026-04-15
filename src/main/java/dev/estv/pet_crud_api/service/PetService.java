@@ -8,6 +8,7 @@ import dev.estv.pet_crud_api.util.PetMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,12 +25,12 @@ public class PetService {
     }
 
     public Page<PetResponseDTO> listPets(int page, int items) {
-        Pageable pageable = PageRequest.of(page, items);
+        Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
         return petRepository.findAll(pageable).map(petMapper::toDTO);
     }
 
     public Page<PetResponseDTO> search(PetResponseDTO filter, int page, int items) {
-        Pageable pageable = PageRequest.of(page, items);
+        Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
         return petRepository.findAll(PetSpecification.filter(filter), pageable).map(petMapper::toDTO);
     }
 }
