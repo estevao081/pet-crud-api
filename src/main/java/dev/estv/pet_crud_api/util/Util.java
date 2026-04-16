@@ -47,11 +47,11 @@ public class Util {
             throw new InvalidAddressException();
         }
 
-        if (!petModel.getAge().matches("^(?:[1-9]|[1-2]\\d|30|não informado)$")) {
+        if (!petModel.getAge().matches("^(?:$|[1-9]|[1-2]\\d|30|não informado)$")) {
             throw new InvalidAgeException();
         }
 
-        if (!petModel.getWeight().matches("^(?:[1-9]|[1-8]\\d|90|não informado)$")) {
+        if (!petModel.getWeight().matches("^(?:$|[1-9]|[1-8]\\d|90|não informado)$")) {
             throw new InvalidWeightException();
         }
 
