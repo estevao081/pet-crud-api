@@ -1,7 +1,6 @@
 package dev.estv.pet_crud_api.service;
 
 import dev.estv.pet_crud_api.dto.response.PetResponseDTO;
-import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.repository.PetRepository;
 import dev.estv.pet_crud_api.specification.PetSpecification;
 import dev.estv.pet_crud_api.util.PetMapper;
@@ -10,8 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PetService {

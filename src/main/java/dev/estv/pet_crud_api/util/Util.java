@@ -6,6 +6,8 @@ import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.model.UserModel;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class Util {
 
@@ -22,6 +24,7 @@ public class Util {
                 .weight(normalizeField(dto.weight()))
                 .race(normalizeField(dto.race()))
                 .owner(user)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
