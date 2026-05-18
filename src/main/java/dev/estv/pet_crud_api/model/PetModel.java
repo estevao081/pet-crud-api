@@ -53,6 +53,8 @@ public class PetModel {
 
     private LocalDateTime createdAt;
 
+    private String imageUrl;
+
     public enum Type {
         CAO, GATO;
 

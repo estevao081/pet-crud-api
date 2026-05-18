@@ -5,12 +5,14 @@ import dev.estv.pet_crud_api.dto.response.ApiResponse;
 import dev.estv.pet_crud_api.dto.response.PetResponseDTO;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.service.PetService;
-import dev.estv.pet_crud_api.service.PetUserService;
+import dev.estv.pet_crud_api.util.ReturnImageURL;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -19,16 +21,18 @@ import java.util.UUID;
 public class PetController {
 
     private final PetService petService;
-    private final PetUserService petUserService;
+    private final ReturnImageURL returnImageURL;
 
-    public PetController(PetService petService, PetUserService petUserService) {
+    public PetController(PetService petService, ReturnImageURL returnImageURL) {
         this.petService = petService;
-        this.petUserService = petUserService;
+        this.returnImageURL = returnImageURL;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Void>> save(@RequestBody @Valid PetRecordDTO dto) {
-        petUserService.save(dto);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<Void>> save(@RequestBody @Valid PetRecordDTO dto,
+                                                  @RequestParam("image") MultipartFile image) {
+        String imageUrl = returnImageURL.imageUrl(image);
+        petService.save(dto, imageUrl);
         return ResponseEntity.status(201)
                 .body(new ApiResponse<>(true, null, "Pet created successfully"));
     }
@@ -42,7 +46,7 @@ public class PetController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
-        boolean deleted = petUserService.delete(id);
+        boolean deleted = petService.delete(id);
         if (!deleted) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(false, null, "Pet not found"));
@@ -56,18 +60,18 @@ public class PetController {
     public ResponseEntity<ApiResponse<Page<PetResponseDTO>>> search(@RequestBody PetResponseDTO filter,
                                                                     @RequestParam int page,
                                                                     @RequestParam int items) {
-        Page<PetResponseDTO> pets = petService.search(filter,  page, items);
+        Page<PetResponseDTO> pets = petService.search(filter, page, items);
         return ResponseEntity.ok(new ApiResponse<>(true, pets, "Search result"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PetModel>> update(@PathVariable(value = "id") UUID id,
                                                         @RequestBody @Valid PetRecordDTO dto) {
-        if (petUserService.findById(id) == null) {
+        if (petService.findById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(false, null, "Pet not found"));
         }
-        PetModel updatedPet = petUserService.update(id, dto);
+        PetModel updatedPet = petService.update(id, dto);
         return ResponseEntity.status(200)
                 .body(new ApiResponse<>(true, updatedPet, "Pet updated succesfuly"));
     }

@@ -6,7 +6,7 @@ import dev.estv.pet_crud_api.dto.response.ApiResponse;
 import dev.estv.pet_crud_api.dto.response.LoginResponseDTO;
 import dev.estv.pet_crud_api.model.UserModel;
 import dev.estv.pet_crud_api.security.TokenService;
-import dev.estv.pet_crud_api.service.NewUserService;
+import dev.estv.pet_crud_api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +22,21 @@ public class AuthController {
 
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
-    private final NewUserService newUserService;
+    private final UserService userService;
 
     public AuthController(PasswordEncoder passwordEncoder,
                           TokenService tokenService,
-                          NewUserService newUserService) {
+                          UserService userService) {
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
-        this.newUserService = newUserService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
             @Valid @RequestBody LoginRequestDTO dto) {
 
-        UserModel user = newUserService.login(dto)
+        UserModel user = userService.login(dto)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
@@ -59,12 +59,12 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponseDTO>> register(
             @Valid @RequestBody UserRecordDTO dto) {
 
-        if (newUserService.findByEmail(dto).isPresent()) {
+        if (userService.findByEmail(dto).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ApiResponse<>(false, null, "User already exists"));
         }
 
-        UserModel newUser = newUserService.save(dto);
+        UserModel newUser = userService.save(dto);
         String token = tokenService.generateToken(newUser);
 
         return ResponseEntity.status(HttpStatus.CREATED)

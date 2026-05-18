@@ -3,7 +3,6 @@ package dev.estv.pet_crud_api.controller;
 import dev.estv.pet_crud_api.dto.request.UserRecordDTO;
 import dev.estv.pet_crud_api.dto.response.ApiResponse;
 import dev.estv.pet_crud_api.model.UserModel;
-import dev.estv.pet_crud_api.service.UserAdminService;
 import dev.estv.pet_crud_api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,16 +17,14 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final UserAdminService userAdminService;
 
-    public UserController(UserService userService, UserAdminService userAdminService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userAdminService = userAdminService;
     }
 
     @GetMapping("/admin")
     public ResponseEntity<ApiResponse<List<UserModel>>> findAll() {
-        List<UserModel> users = userAdminService.findAll();
+        List<UserModel> users = userService.findAll();
         return ResponseEntity.ok(new ApiResponse<>(true, users, "Users list"));
     }
 
@@ -46,7 +43,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserModel>> update(@PathVariable(value = "id") UUID id,
                                                          @RequestBody @Valid UserRecordDTO dto) {
-        if (userAdminService.findById(id) == null) {
+        if (userService.findById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(false, null, "User not found"));
         }
