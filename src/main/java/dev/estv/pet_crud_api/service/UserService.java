@@ -28,7 +28,7 @@ public class UserService {
         this.util = util;
     }
 
-    @Value("${ADMIN_EMAIL}")
+    @Value("${admin.email}")
     private String adminEmail;
 
     public UserModel save(UserRecordDTO dto) {
