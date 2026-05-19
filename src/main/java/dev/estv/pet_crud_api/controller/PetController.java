@@ -29,7 +29,7 @@ public class PetController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Void>> save(@RequestBody @Valid PetRecordDTO dto,
+    public ResponseEntity<ApiResponse<Void>> save(@ModelAttribute @Valid PetRecordDTO dto,
                                                   @RequestParam("image") MultipartFile image) {
         String imageUrl = returnImageURL.imageUrl(image);
         petService.save(dto, imageUrl);
