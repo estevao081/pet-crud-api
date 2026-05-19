@@ -1,20 +1,17 @@
 package dev.estv.pet_crud_api.security;
 
-import dev.estv.pet_crud_api.model.UserModel;
-import dev.estv.pet_crud_api.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -23,7 +20,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private TokenService tokenService;
 
     @Autowired
-    private UserRepository userRepository;
+    private CustomClientDetailsService customClientDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -33,10 +30,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        if (path.startsWith("/auth")
-                || path.startsWith("/swagger")
-                || path.startsWith("/v3/api-docs")) {
-
+        if (path.startsWith("/auth") || path.startsWith("/swagger") ||
+                path.startsWith("/v3/api-docs") || path.equals("/pets") && request.getMethod().equals("GET")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,27 +39,15 @@ public class SecurityFilter extends OncePerRequestFilter {
         String token = recoverToken(request);
 
         if (token != null) {
-            String login = tokenService.validateToken(token);
+            String email = tokenService.validateToken(token);
 
-            if (login != null) {
-                UserModel user = userRepository.findByUsermail(login)
-                        .orElse(null);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                if (user != null) {
-                    String role = tokenService.getRole(token);
+                UserDetails userDetails = customClientDetailsService.loadUserByUsername(email);
 
-                    if (role == null || role.isBlank()) {
-                        filterChain.doFilter(request, response);
-                        return;
-                    }
-
-                    var authorities = Collections.singletonList(
-                            new SimpleGrantedAuthority(role)
-                    );
-
-                    var authentication = new UsernamePasswordAuthenticationToken(
-                            user.getEmail(), null, authorities
-                    );
+                if (userDetails != null) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

@@ -48,14 +48,12 @@ public class TokenService {
     public String getRole(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-
             return JWT.require(algorithm)
                     .withIssuer("estv")
                     .build()
                     .verify(token)
                     .getClaim("role")
                     .asString();
-
         } catch (JWTVerificationException e) {
             return null;
         }
