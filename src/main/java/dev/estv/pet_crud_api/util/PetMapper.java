@@ -12,5 +12,6 @@ public interface PetMapper {
     @Mapping(target = "type", expression = "java(pet.getType().name())")
     @Mapping(target = "gender", expression = "java(pet.getGender().name())")
     @Mapping(target = "owner", source = "owner")
+    @Mapping(target = "imageUrl", source = "imageUrl")
     PetResponseDTO toDTO(PetModel pet);
 }

@@ -72,10 +72,11 @@ public class PetService {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public PetModel update(UUID id, PetRecordDTO petRecordDTO) {
-        Optional<PetModel> pet = petRepository.findById(id);
-        var petModel = pet.get();
-        BeanUtils.copyProperties(petRecordDTO, petModel);
+    public PetModel update(UUID id, PetRecordDTO dto, String newImageUrl) {
+        var petModel = petRepository.findById(id).get();
+        String oldImage = petModel.getImageUrl();
+        BeanUtils.copyProperties(dto, petModel);
+        petModel.setImageUrl(newImageUrl != null ? newImageUrl : oldImage);
         util.validatePet(petModel);
         return petRepository.save(petModel);
     }

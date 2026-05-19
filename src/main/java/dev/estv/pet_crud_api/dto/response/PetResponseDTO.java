@@ -30,6 +30,7 @@ public class PetResponseDTO {
     private String weight;
     private String race;
     private OwnerDTO owner;
+    private String imageUrl;
 
     @Setter
     @Getter

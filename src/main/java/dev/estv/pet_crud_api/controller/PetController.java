@@ -64,15 +64,17 @@ public class PetController {
         return ResponseEntity.ok(new ApiResponse<>(true, pets, "Search result"));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<PetModel>> update(@PathVariable(value = "id") UUID id,
-                                                        @RequestBody @Valid PetRecordDTO dto) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<PetModel>> update(
+            @PathVariable UUID id,
+            @ModelAttribute @Valid PetRecordDTO dto,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
         if (petService.findById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(false, null, "Pet not found"));
         }
-        PetModel updatedPet = petService.update(id, dto);
-        return ResponseEntity.status(200)
-                .body(new ApiResponse<>(true, updatedPet, "Pet updated succesfuly"));
+        String imageUrl = (image != null && !image.isEmpty()) ? returnImageURL.imageUrl(image) : null;
+        PetModel updatedPet = petService.update(id, dto, imageUrl);
+        return ResponseEntity.ok(new ApiResponse<>(true, updatedPet, "Pet updated successfully"));
     }
 }
