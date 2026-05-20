@@ -1,10 +1,13 @@
 package dev.estv.pet_crud_api.util;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
 
@@ -18,11 +21,39 @@ public class ReturnImageURL {
     }
 
     public String imageUrl(MultipartFile image) {
+
+        final long MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+        if (image.isEmpty() || image.getSize() > MAX_FILE_SIZE) {
+            throw new RuntimeException("Select an Image with 5MB or less");
+        }
+
         try {
+
+            BufferedImage bufferedImage =
+                    ImageIO.read(image.getInputStream());
+
+            if (bufferedImage.getWidth() > 4000 ||
+                    bufferedImage.getHeight() > 4000) {
+
+                throw new RuntimeException("Resolução muito alta");
+            }
+
+            Map params = ObjectUtils.asMap(
+                    "folder", "pets",
+                    "transformation", new Transformation()
+                            .width(800)
+                            .height(800)
+                            .crop("limit")
+                            .quality("auto")
+                            .fetchFormat("auto")
+            );
+
             Map uploadResult = cloudinary.uploader()
-                    .upload(image.getBytes(), ObjectUtils.emptyMap());
+                    .upload(image.getBytes(), params);
 
             return uploadResult.get("secure_url").toString();
+
         } catch (IOException e) {
             throw new RuntimeException("Erro ao enviar imagem");
         }

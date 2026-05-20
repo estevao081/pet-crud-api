@@ -1,7 +1,7 @@
 package dev.estv.pet_crud_api.exception.handler;
 
 import dev.estv.pet_crud_api.dto.response.ApiResponse;
-import dev.estv.pet_crud_api.exception.*;
+import dev.estv.pet_crud_api.exception.exceptions.*;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,7 +41,8 @@ public class GlobalExceptionHandler {
             InvalidRaceException.class,
             InvalidEmailException.class,
             InvalidPasswordException.class,
-            InvalidNumberException.class,})
+            InvalidNumberException.class,
+            InvalidImageException.class})
     public ResponseEntity<ApiResponse<Void>> handleBusiness(RuntimeException ex) {
         return ResponseEntity.badRequest()
                 .body(new ApiResponse<>(false, null, ex.getMessage()));

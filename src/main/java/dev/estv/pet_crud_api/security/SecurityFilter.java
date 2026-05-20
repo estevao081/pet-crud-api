@@ -30,10 +30,15 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
+        if (request.getMethod().equals("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (path.startsWith("/auth")
                 || path.startsWith("/swagger")
                 || path.startsWith("/v3/api-docs")
-                || path.equals("/pets") && request.getMethod().equals("GET")
+                || path.equals("/pets/**") && request.getMethod().equals("GET")
                 || (path.equals("/pets/search") && request.getMethod().equals("POST"))
         ) {
             filterChain.doFilter(request, response);

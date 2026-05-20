@@ -1,4 +1,4 @@
-package dev.estv.pet_crud_api.exception;
+package dev.estv.pet_crud_api.exception.exceptions;
 
 public class InvalidWeightException extends RuntimeException {
     public InvalidWeightException() {

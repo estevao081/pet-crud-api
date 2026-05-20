@@ -1,7 +1,7 @@
 package dev.estv.pet_crud_api.model;
 
-import dev.estv.pet_crud_api.exception.InvalidGenderException;
-import dev.estv.pet_crud_api.exception.InvalidTypeException;
+import dev.estv.pet_crud_api.exception.exceptions.InvalidGenderException;
+import dev.estv.pet_crud_api.exception.exceptions.InvalidTypeException;
 import jakarta.persistence.*;
 import lombok.*;
 

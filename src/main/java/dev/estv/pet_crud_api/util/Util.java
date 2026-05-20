@@ -1,7 +1,7 @@
 package dev.estv.pet_crud_api.util;
 
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
-import dev.estv.pet_crud_api.exception.*;
+import dev.estv.pet_crud_api.exception.exceptions.*;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.model.UserModel;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class Util {
                 .name(dto.name().toLowerCase())
                 .type(PetModel.Type.fromString(dto.type()))
                 .gender(PetModel.Gender.fromString(dto.gender()))
-                .city(dto.city())
+                .city(dto.city().toLowerCase())
                 .state(dto.state())
                 .age(normalizeField(dto.age()))
                 .weight(normalizeField(dto.weight()))
