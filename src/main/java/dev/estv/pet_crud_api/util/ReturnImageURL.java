@@ -3,6 +3,7 @@ package dev.estv.pet_crud_api.util;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
+import dev.estv.pet_crud_api.exception.exceptions.InvalidImageException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,18 +26,14 @@ public class ReturnImageURL {
         final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
         if (image.isEmpty() || image.getSize() > MAX_FILE_SIZE) {
-            throw new RuntimeException("Select an Image with 5MB or less");
+            throw new InvalidImageException();
         }
 
         try {
+            BufferedImage bufferedImage = ImageIO.read(image.getInputStream());
 
-            BufferedImage bufferedImage =
-                    ImageIO.read(image.getInputStream());
-
-            if (bufferedImage.getWidth() > 4000 ||
-                    bufferedImage.getHeight() > 4000) {
-
-                throw new RuntimeException("Resolução muito alta");
+            if (bufferedImage.getWidth() > 4000 || bufferedImage.getHeight() > 4000) {
+                throw new InvalidImageException();
             }
 
             Map params = ObjectUtils.asMap(
@@ -49,13 +46,12 @@ public class ReturnImageURL {
                             .fetchFormat("auto")
             );
 
-            Map uploadResult = cloudinary.uploader()
-                    .upload(image.getBytes(), params);
+            Map uploadResult = cloudinary.uploader().upload(image.getBytes(), params);
 
             return uploadResult.get("secure_url").toString();
 
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao enviar imagem");
+            throw new RuntimeException("Error on send image");
         }
     }
 }

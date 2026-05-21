@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,6 +59,9 @@ public class PetService {
         PetModel pet = util.toEntity(dto, user);
         pet.setImageUrl(imageUrl);
         util.validatePet(pet);
+
+        user.setPetsId(Collections.singletonList(pet.getId()));
+
         return petRepository.save(pet);
     }
 

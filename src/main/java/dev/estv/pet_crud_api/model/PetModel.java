@@ -48,7 +48,7 @@ public class PetModel {
     private String race;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "user_id")
     private UserModel owner;
 
     private LocalDateTime createdAt;

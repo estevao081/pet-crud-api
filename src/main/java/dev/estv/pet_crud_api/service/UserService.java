@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,7 @@ public class UserService {
         return newUser;
     }
 
+    @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public boolean delete(UUID id) {
         if (!userRepository.existsById(id)) {
@@ -65,7 +67,7 @@ public class UserService {
     public UserModel update(UUID id, UserRecordDTO dto) {
         Optional<UserModel> user = userRepository.findById(id);
         var userModel = user.get();
-        BeanUtils.copyProperties(dto, userModel);
+        BeanUtils.copyProperties(dto, userModel, "password");
         util.validateUser(userModel);
         return userRepository.save(userModel);
     }
