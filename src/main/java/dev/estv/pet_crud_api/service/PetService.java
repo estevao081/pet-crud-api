@@ -59,9 +59,7 @@ public class PetService {
         PetModel pet = util.toEntity(dto, user);
         pet.setImageUrl(imageUrl);
         util.validatePet(pet);
-
-        user.setPetsId(Collections.singletonList(pet.getId()));
-
+        user.getPets().add(pet);
         return petRepository.save(pet);
     }
 
