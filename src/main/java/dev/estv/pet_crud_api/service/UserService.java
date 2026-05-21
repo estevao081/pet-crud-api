@@ -2,6 +2,7 @@ package dev.estv.pet_crud_api.service;
 
 import dev.estv.pet_crud_api.dto.request.LoginRequestDTO;
 import dev.estv.pet_crud_api.dto.request.UserRecordDTO;
+import dev.estv.pet_crud_api.dto.request.UserUpdateDTO;
 import dev.estv.pet_crud_api.model.UserModel;
 import dev.estv.pet_crud_api.repository.UserRepository;
 import dev.estv.pet_crud_api.util.Util;
@@ -64,10 +65,10 @@ public class UserService {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public UserModel update(UUID id, UserRecordDTO dto) {
+    public UserModel update(UUID id, UserUpdateDTO dto) {
         Optional<UserModel> user = userRepository.findById(id);
         var userModel = user.get();
-        BeanUtils.copyProperties(dto, userModel, "password");
+        BeanUtils.copyProperties(dto, userModel);
         util.validateUser(userModel);
         return userRepository.save(userModel);
     }

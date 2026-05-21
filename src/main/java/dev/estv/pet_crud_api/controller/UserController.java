@@ -1,6 +1,6 @@
 package dev.estv.pet_crud_api.controller;
 
-import dev.estv.pet_crud_api.dto.request.UserRecordDTO;
+import dev.estv.pet_crud_api.dto.request.UserUpdateDTO;
 import dev.estv.pet_crud_api.dto.response.ApiResponse;
 import dev.estv.pet_crud_api.model.UserModel;
 import dev.estv.pet_crud_api.service.UserService;
@@ -42,7 +42,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserModel>> update(@PathVariable(value = "id") UUID id,
-                                                         @RequestBody @Valid UserRecordDTO dto) {
+                                                         @RequestBody @Valid UserUpdateDTO dto) {
         if (userService.findById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse<>(false, null, "User not found"));
