@@ -3,6 +3,7 @@ package dev.estv.pet_crud_api.service;
 import dev.estv.pet_crud_api.dto.request.LoginRequestDTO;
 import dev.estv.pet_crud_api.dto.request.UserRecordDTO;
 import dev.estv.pet_crud_api.dto.request.UserUpdateDTO;
+import dev.estv.pet_crud_api.dto.response.UserResponseDTO;
 import dev.estv.pet_crud_api.model.UserModel;
 import dev.estv.pet_crud_api.repository.UserRepository;
 import dev.estv.pet_crud_api.util.Util;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,8 +76,11 @@ public class UserService {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UserModel> findAll() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(util::toDTO)
+                .toList();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

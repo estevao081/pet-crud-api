@@ -2,6 +2,7 @@ package dev.estv.pet_crud_api.controller;
 
 import dev.estv.pet_crud_api.dto.request.UserUpdateDTO;
 import dev.estv.pet_crud_api.dto.response.ApiResponse;
+import dev.estv.pet_crud_api.dto.response.UserResponseDTO;
 import dev.estv.pet_crud_api.model.UserModel;
 import dev.estv.pet_crud_api.service.UserService;
 import jakarta.validation.Valid;
@@ -23,8 +24,8 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    public ResponseEntity<ApiResponse<List<UserModel>>> findAll() {
-        List<UserModel> users = userService.findAll();
+    public ResponseEntity<ApiResponse<List<UserResponseDTO>>> findAll() {
+        List<UserResponseDTO> users = userService.findAll();
         return ResponseEntity.ok(new ApiResponse<>(true, users, "Users list"));
     }
 

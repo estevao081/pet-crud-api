@@ -1,6 +1,8 @@
 package dev.estv.pet_crud_api.util;
 
 import dev.estv.pet_crud_api.dto.request.PetRecordDTO;
+import dev.estv.pet_crud_api.dto.request.UserRecordDTO;
+import dev.estv.pet_crud_api.dto.response.UserResponseDTO;
 import dev.estv.pet_crud_api.exception.exceptions.*;
 import dev.estv.pet_crud_api.model.PetModel;
 import dev.estv.pet_crud_api.model.UserModel;
@@ -26,6 +28,15 @@ public class Util {
                 .owner(user)
                 .createdAt(LocalDateTime.now())
                 .build();
+    }
+
+    public UserResponseDTO toDTO(UserModel user) {
+        return new UserResponseDTO(
+                user.getId().toString(),
+                user.getName(),
+                user.getNumber(),
+                user.getEmail()
+        );
     }
 
     public String normalizeField(String value) {
