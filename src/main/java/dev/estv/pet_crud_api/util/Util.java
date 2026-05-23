@@ -35,7 +35,8 @@ public class Util {
                 user.getId().toString(),
                 user.getName(),
                 user.getNumber(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole().name()
         );
     }
 
