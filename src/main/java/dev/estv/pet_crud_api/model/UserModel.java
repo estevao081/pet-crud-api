@@ -1,8 +1,7 @@
 package dev.estv.pet_crud_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +27,7 @@ public class UserModel {
     private Role role;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     private List<PetModel> pets;
 
     public enum Role {
